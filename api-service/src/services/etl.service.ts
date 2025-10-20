@@ -79,4 +79,18 @@ export class ETLService {
   //   // 3. Handle connection errors gracefully
   //   // 4. Return formatted status response
   // }
+  async getJobStatus(jobId: string): Promise<{ status: string; progress?: number; message?: string } | null> {
+    const job = await this.dbService.getETLJob(jobId);
+    if (!job) {
+      return null;
+    }
+
+    try {
+      const response = await axios.get(`${this.etlServiceUrl}/jobs/${jobId}/status`);
+      return response.data;
+    } catch (error) {
+      // Handle connection errors gracefully
+      return { status: job.status, message: 'Unable to retrieve real-time status from ETL service' };
+    }
+  }
 }
