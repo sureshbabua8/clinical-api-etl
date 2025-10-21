@@ -16,14 +16,12 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Clinical Data ETL Service", version="1.0.0")
 etl_processor = ETLProcessor()
 
-# In-memory job storage (for demo purposes)
-# In production, this would use a proper database or job queue
 jobs: Dict[str, Dict[str, Any]] = {}
 
 class ETLJobRequest(BaseModel):
     jobId: str
     filename: str
-    studyId: Optional[str] = None
+    studyId: str
 
 class ETLJobResponse(BaseModel):
     jobId: str
@@ -49,15 +47,12 @@ async def process_etl_job(job_id: str, filename: str, study_id: str):
     try:
         logger.info(f"Processing ETL job {job_id}")
 
-        # Update job status to running
         jobs[job_id]["status"] = "running"
         jobs[job_id]["progress"] = 10
         jobs[job_id]["message"] = "Processing file..."
 
-        # Execute ETL pipeline
         result = await etl_processor.process_job(job_id, filename, study_id)
 
-        # Update job with results
         jobs[job_id]["status"] = result["status"]
         jobs[job_id]["progress"] = 100 if result["status"] == "completed" else 0
         jobs[job_id]["message"] = result.get("message", "")
@@ -81,7 +76,6 @@ async def submit_job(job_request: ETLJobRequest, background_tasks: BackgroundTas
     """
     job_id = job_request.jobId
 
-    # Store job in memory (simplified for demo)
     jobs[job_id] = {
         "jobId": job_id,
         "filename": job_request.filename,
@@ -91,7 +85,6 @@ async def submit_job(job_request: ETLJobRequest, background_tasks: BackgroundTas
         "message": "Job queued for processing"
     }
 
-    # Add ETL processing to background tasks
     background_tasks.add_task(
         process_etl_job,
         job_id,

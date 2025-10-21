@@ -115,7 +115,7 @@ class ETLProcessor:
         """
         df_clean = df.copy()
 
-        # Filter by study ID if provided
+        # Filter by study ID
         if study_id_filter:
             df_clean = df_clean[df_clean['study_id'] == study_id_filter]
 

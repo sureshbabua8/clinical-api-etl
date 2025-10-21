@@ -86,7 +86,7 @@ class DatabaseService:
             cursor = conn.cursor()
 
             # Note: This updates the in-memory jobs dict in main.py
-            # For production, you'd update the etl_jobs table here
+            # For production, we will have to update the etl_jobs table here
 
             cursor.close()
             conn.commit()
