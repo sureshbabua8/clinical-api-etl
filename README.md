@@ -127,12 +127,19 @@ Design and implement an optimized schema and indexes for analytical queries in P
 - Performance optimization
 
 **Example Business Questions to Optimize For:**
+
 - Which studies have the highest data quality scores?
+
 - What are the glucose trends for a specific participant over time?
+
 - How do measurement counts compare across different research sites?
+
 - Which measurements have quality scores below our threshold?
+
 - What clinical data was collected in the last 30 days?
+
 - How many participants are enrolled in each study?
+
 - What's the average BMI for participants in a specific study?
 
 **Your schema should efficiently support these types of analytical queries.**

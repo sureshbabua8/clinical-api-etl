@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 import uvicorn
 import os
 import logging
-from etl_processor import ETLProcessor
+from src.etl_processor import ETLProcessor
 
 # Configure logging
 logging.basicConfig(
