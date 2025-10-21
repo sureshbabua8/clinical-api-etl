@@ -79,7 +79,7 @@ class DatabaseService:
             conn.close()
 
     def update_job_status(self, job_id: str, status: str,
-                         progress: int = None, message: str = None):
+                         progress: int, message: str):
         """Update ETL job status in database"""
         conn = self.get_connection()
         try:
