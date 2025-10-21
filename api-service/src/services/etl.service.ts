@@ -79,18 +79,54 @@ export class ETLService {
   //   // 3. Handle connection errors gracefully
   //   // 4. Return formatted status response
   // }
-  async getJobStatus(jobId: string): Promise<{ status: string; progress?: number; message?: string } | null> {
+  async getJobStatus(jobId: string): Promise<{ jobId: string; status: string; progress?: number; message?: string } | null> {
+    // Validate job exists in database
     const job = await this.dbService.getETLJob(jobId);
     if (!job) {
       return null;
     }
 
     try {
-      const response = await axios.get(`${this.etlServiceUrl}/jobs/${jobId}/status`);
-      return response.data;
+      // Attempt to get real-time status from ETL service
+      const response = await axios.get(`${this.etlServiceUrl}/jobs/${jobId}/status`, {
+        timeout: 5000 // 5 second timeout
+      });
+
+      return {
+        jobId: jobId,
+        status: response.data.status || job.status,
+        progress: response.data.progress,
+        message: response.data.message
+      };
     } catch (error) {
       // Handle connection errors gracefully
-      return { status: job.status, message: 'Unable to retrieve real-time status from ETL service' };
+      if (axios.isAxiosError(error)) {
+        if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
+          // ETL service is down or unreachable
+          console.warn(`ETL service unreachable for job ${jobId}: ${error.message}`);
+          return {
+            jobId: jobId,
+            status: job.status,
+            message: `Using cached status - ETL service temporarily unavailable`
+          };
+        } else if (error.response?.status === 404) {
+          // Job not found in ETL service, return database status
+          console.warn(`Job ${jobId} not found in ETL service, using database status`);
+          return {
+            jobId: jobId,
+            status: job.status,
+            message: 'Status from database'
+          };
+        }
+      }
+
+      // Generic error fallback
+      console.error(`Error retrieving status for job ${jobId}:`, error);
+      return {
+        jobId: jobId,
+        status: job.status,
+        message: 'Unable to retrieve real-time status, showing last known status'
+      };
     }
   }
 }

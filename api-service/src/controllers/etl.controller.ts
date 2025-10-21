@@ -62,14 +62,14 @@ export class ETLController {
   getJobStatus = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { id } = req.params;
-      const status = await this.etlService.getJobStatus(id);
-      
-      if (!status) {
+      const statusData = await this.etlService.getJobStatus(id);
+
+      if (!statusData) {
         errorResponse(res, 'Job not found', 404);
         return;
       }
 
-      successResponse(res, { status }, 'Job status retrieved successfully');
+      successResponse(res, statusData, 'Status retrieved successfully');
     } catch (error) {
       next(error);
     }
