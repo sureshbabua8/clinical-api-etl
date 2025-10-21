@@ -40,7 +40,7 @@ class ETLJobStatus(BaseModel):
 async def health_check():
     return {"status": "healthy", "service": "etl"}
 
-async def process_etl_job(job_id: str, filename: str, study_id: Optional[str]):
+async def process_etl_job(job_id: str, filename: str, study_id: str):
     """
     Background task to process ETL job
 

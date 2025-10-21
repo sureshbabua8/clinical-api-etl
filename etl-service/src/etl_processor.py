@@ -16,14 +16,14 @@ class ETLProcessor:
         self.min_quality_score = 0.90  # Minimum acceptable quality score
 
     async def process_job(self, job_id: str, filename: str,
-                         study_id: str = None) -> Dict[str, Any]:
+                         study_id: str) -> Dict[str, Any]:
         """
         Process ETL job
 
         Args:
             job_id: Unique job identifier
             filename: Name of the file to process
-            study_id: Optional study ID filter
+            study_id: study ID filter
 
         Returns:
             Processing results dictionary
@@ -102,13 +102,13 @@ class ETLProcessor:
         return df
 
     def _transform_data(self, df: pd.DataFrame,
-                       study_id_filter: str = None) -> pd.DataFrame:
+                       study_id_filter: str) -> pd.DataFrame:
         """
         Transform and clean data
 
         Args:
             df: Input DataFrame
-            study_id_filter: Optional study ID to filter by
+            study_id_filter: study ID to filter by
 
         Returns:
             Transformed DataFrame
