@@ -838,29 +838,3 @@ SELECT * FROM mv_study_quality_summary;
 -- Test BMI calculation
 SELECT calculate_bmi('P001', '2024-01-15');
 ```
-
-### Test Coverage Areas
-
-1. **Happy Path**
-   - Submit job with valid data
-   - Query status while running
-   - Query completed job
-   - Retrieve processed data
-
-2. **Error Handling**
-   - Invalid job ID (404)
-   - ETL service unavailable (graceful degradation)
-   - Invalid CSV format
-   - Missing required columns
-   - Foreign key violations
-
-3. **Data Quality**
-   - Quality score calculations
-   - Duplicate detection
-   - Missing value handling
-   - Type conversions
-
-4. **Performance**
-   - Index usage (EXPLAIN ANALYZE)
-   - Query response times
-   - Bulk insert performance
